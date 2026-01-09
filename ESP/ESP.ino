@@ -2,6 +2,8 @@
 #include <ESP8266WebServer.h>
 #include <WiFiUdp.h>
 #include <NTPClient.h>
+#include <ESP8266HTTPClient.h>
+#include <WiFiClientSecure.h>
 
 // Wi-Fi credentials
 const char* ssid = "DITO_302E3_2.4";
@@ -30,6 +32,35 @@ bool triggered = false;
 unsigned long triggerTime = 0;
 int lastMinute = -1;   // keep track of last minute to avoid retriggers
 
+// Firebase database URL
+const char* firebaseHost = "https://petfeeder-8cf87-default-rtdb.asia-southeast1.firebasedatabase.app/logs.json";
+
+// Function to send log to Firebase over HTTPS
+void sendLog(String event) {
+  if (WiFi.status() == WL_CONNECTED) {
+    WiFiClientSecure client;
+    client.setInsecure();   // skip certificate validation for testing
+    HTTPClient http;
+    http.begin(client, firebaseHost);   // HTTPS connection
+    http.addHeader("Content-Type", "application/json");
+
+    String json = "{\"timestamp\":\"" + timeClient.getFormattedTime() + "\",\"event\":\"" + event + "\"}";
+    int httpResponseCode = http.POST(json);
+
+    if (httpResponseCode > 0) {
+      Serial.printf("Log sent: %s\n", json.c_str());
+      Serial.printf("Response code: %d\n", httpResponseCode);
+      String payload = http.getString();
+      Serial.println("Firebase response: " + payload);
+    } else {
+      Serial.printf("Error sending log: %d\n", httpResponseCode);
+    }
+    http.end();
+  } else {
+    Serial.println("WiFi not connected, cannot send log");
+  }
+}
+
 void setup() {
   Serial.begin(115200);
   pinMode(ledPin, OUTPUT);
@@ -55,8 +86,10 @@ void setup() {
   server.on("/led/on", []() {
     digitalWrite(ledPin, HIGH);
     server.sendHeader("Access-Control-Allow-Origin", "*");
-    server.send(200, "text/plain", "LED is ON (manual)");
-    Serial.println("LED turned ON manually");
+    server.send(200, "text/plain", "Food Served (manual)");
+    Serial.println("Food Served manually");
+
+    sendLog("Food Served (manual)");
 
     // Auto-off after 5 seconds
     triggerTime = millis();
@@ -69,6 +102,7 @@ void setup() {
     server.send(200, "text/plain", "LED is OFF (manual)");
     Serial.println("LED turned OFF manually");
     triggered = false; // reset flag
+    // No log here
   });
 
   // Schedule route
@@ -137,7 +171,8 @@ void loop() {
     triggerTime = millis();
     triggered = true;
     lastMinute = currentMinute;  // mark this minute as already triggered
-    Serial.println("LED auto ON by schedule (5 sec)");
+    Serial.println("Food Served by schedule (5 sec)");
+    sendLog("Food Served (schedule)");
   }
 
   // Turn off LED after 5 seconds (works for both manual and schedule)
@@ -145,5 +180,6 @@ void loop() {
     digitalWrite(ledPin, LOW);
     Serial.println("LED auto OFF after 5 sec");
     triggered = false; // reset so it doesn’t keep firing
+    // No log here
   }
 }
