@@ -6,8 +6,8 @@
 
 /* Top bar */
 .topbar {
-  background: rgb(97, 153, 183);
-  color: rgba(187, 220, 236);
+  background: rgb(169, 198, 213);
+  color: rgb(47, 55, 60);
   font-size: 0.9rem;
   display: flex;
   justify-content: space-between;
@@ -27,7 +27,7 @@
 }
 
 .topbar__right a {
-  color: rgba(187, 220, 236);
+  color: rgb(47, 55, 60);
   text-decoration: none;
   border: 1px solid var(--gray-700);
   padding: 0.15rem 0.5rem;
@@ -37,7 +37,7 @@
 
 .topbar__right a:hover {
   background: var(--gray-100);
-  color: rgba(187, 220, 236);
+  color: rgb(52, 62, 68);
 }
 
 /* Navbar */
@@ -79,8 +79,8 @@
 
 .navbar__links a:hover,
 .navbar__links a.active {
-  color: rgb(105, 168, 200);
-  border-color: rgb(105, 168, 200);
+  color: rgb(122, 185, 216);
+  border-color: rgb(122, 185, 216);
 }
 
 /* Hero */
@@ -139,13 +139,13 @@
 }
 
 .btn--primary {
-  background: var(--primary-600);
+  background: rgb(169, 198, 213);
   color: #fff;
-  border: 1px solid var(--primary-700);
+  border: 1px solid rgb(169, 198, 213);
 }
 
 .btn--primary:hover {
-  background: var(--primary-700);
+  background: rgb(86, 138, 165);
 }
 
 .btn--outline {
