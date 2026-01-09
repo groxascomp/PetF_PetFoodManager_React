@@ -260,6 +260,12 @@
   }
 }
 
+.latest-row {
+  background-color: rgb(215, 232, 241); /* light yellow highlight */
+  font-weight: bold;
+  transition: background-color 0.5s ease; /* smooth fade */
+}
+
 @media (max-width: 1200px) {
   .topbar {
     flex-direction: column;
@@ -312,3 +318,4 @@
     text-align: center;
   }
 }
+

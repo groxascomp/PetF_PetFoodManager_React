@@ -4,6 +4,7 @@
 #include <NTPClient.h>
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecure.h>
+#include <time.h>
 
 // Wi-Fi credentials
 const char* ssid = "DITO_302E3_2.4";
@@ -35,8 +36,34 @@ int lastMinute = -1;   // keep track of last minute to avoid retriggers
 // Firebase database URL
 const char* firebaseHost = "https://petfeeder-8cf87-default-rtdb.asia-southeast1.firebasedatabase.app/logs.json";
 
+// Month names
+const char* monthNames[] = {
+  "Jan","Feb","Mar","Apr","May","Jun",
+  "Jul","Aug","Sep","Oct","Nov","Dec"
+};
+
+// Helper: format current local date-time from NTP
+String getTimestamp() {
+  timeClient.update();
+  unsigned long epochTime = timeClient.getEpochTime();
+  time_t rawTime = (time_t)epochTime;
+  struct tm *ptm = localtime(&rawTime);
+
+  int year   = ptm->tm_year + 1900;
+  int month  = ptm->tm_mon; // 0-based index
+  int day    = ptm->tm_mday;
+  int hour   = ptm->tm_hour;
+  int minute = ptm->tm_min;
+
+  char buf[40];
+  // Format: "Mon-DD-YYYY HH:MM" (no seconds)
+  sprintf(buf, "%s-%02d-%04d %02d:%02d",
+          monthNames[month], day, year, hour, minute);
+  return String(buf);
+}
+
 // Function to send log to Firebase over HTTPS
-void sendLog(String event) {
+void sendLog(const String& event) {
   if (WiFi.status() == WL_CONNECTED) {
     WiFiClientSecure client;
     client.setInsecure();   // skip certificate validation for testing
@@ -44,7 +71,8 @@ void sendLog(String event) {
     http.begin(client, firebaseHost);   // HTTPS connection
     http.addHeader("Content-Type", "application/json");
 
-    String json = "{\"timestamp\":\"" + timeClient.getFormattedTime() + "\",\"event\":\"" + event + "\"}";
+    String timestamp = getTimestamp();
+    String json = "{\"timestamp\":\"" + timestamp + "\",\"event\":\"" + event + "\"}";
     int httpResponseCode = http.POST(json);
 
     if (httpResponseCode > 0) {
@@ -82,27 +110,27 @@ void setup() {
   // Start NTP
   timeClient.begin();
 
-  // Manual routes
+  // Manual route
   server.on("/led/on", []() {
     digitalWrite(ledPin, HIGH);
     server.sendHeader("Access-Control-Allow-Origin", "*");
-    server.send(200, "text/plain", "Food Served (manual)");
-    Serial.println("Food Served manually");
+    server.send(200, "text/plain", "Food Served (Manual)");
+    Serial.println("Food Served (Manual)");
 
-    sendLog("Food Served (manual)");
+    sendLog("Food Served (Manual)");
 
     // Auto-off after 5 seconds
     triggerTime = millis();
     triggered = true;
   });
 
+  // LED off route (no logging)
   server.on("/led/off", []() {
     digitalWrite(ledPin, LOW);
     server.sendHeader("Access-Control-Allow-Origin", "*");
-    server.send(200, "text/plain", "LED is OFF (manual)");
+    server.send(200, "text/plain", "LED is OFF (Manual)");
     Serial.println("LED turned OFF manually");
     triggered = false; // reset flag
-    // No log here
   });
 
   // Schedule route
@@ -171,8 +199,8 @@ void loop() {
     triggerTime = millis();
     triggered = true;
     lastMinute = currentMinute;  // mark this minute as already triggered
-    Serial.println("Food Served by schedule (5 sec)");
-    sendLog("Food Served (schedule)");
+    Serial.println("Food Served (Scheduled)");
+    sendLog("Food Served (Scheduled)");
   }
 
   // Turn off LED after 5 seconds (works for both manual and schedule)
