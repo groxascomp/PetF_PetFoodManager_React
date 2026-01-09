@@ -7,7 +7,7 @@
 /* Top bar */
 .topbar {
   background: rgb(169, 198, 213);
-  color: rgb(47, 55, 60);
+  color: rgb(255, 255, 255);
   font-size: 0.9rem;
   display: flex;
   justify-content: space-between;
@@ -27,9 +27,9 @@
 }
 
 .topbar__right a {
-  color: rgb(47, 55, 60);
+  color: rgb(255, 255, 255);
   text-decoration: none;
-  border: 1px solid var(--gray-700);
+  border: 1px solid rgb(255, 255, 255);
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
   transition: background 0.2s ease, color 0.2s ease;
