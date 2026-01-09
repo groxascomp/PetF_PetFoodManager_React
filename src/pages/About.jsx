@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function About() {
   const [status, setStatus] = useState("");
@@ -7,14 +7,37 @@ export default function About() {
   const [nightHour, setNightHour] = useState("");
   const [nightMinute, setNightMinute] = useState("");
 
-  // Store the saved schedule for display
   const [savedDay, setSavedDay] = useState(null);
   const [savedNight, setSavedNight] = useState(null);
 
   // ESP8266 IP address
   const ESP_IP = "http://192.168.8.139";
 
-  // Manual control: LED ON for 5 sec
+  // Load schedule from ESP when component mounts
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const res = await fetch(`${ESP_IP}/getSchedule`);
+        if (!res.ok) throw new Error("Bad response");
+        const data = await res.json();
+
+        setDayHour(String(data.dayHour));
+        setDayMinute(String(data.dayMinute));
+        setNightHour(String(data.nightHour));
+        setNightMinute(String(data.nightMinute));
+
+        setSavedDay(`${String(data.dayHour).padStart(2, "0")}:${String(data.dayMinute).padStart(2, "0")}`);
+        setSavedNight(`${String(data.nightHour).padStart(2, "0")}:${String(data.nightMinute).padStart(2, "0")}`);
+      } catch (err) {
+        console.error(err);
+        setStatus("❌ Error: Could not fetch schedule from ESP8266");
+      }
+    };
+
+    fetchSchedule();
+  }, []);
+
+  // Manual control
   const turnOnLed = async () => {
     try {
       const res = await fetch(`${ESP_IP}/led/on`);
@@ -22,7 +45,6 @@ export default function About() {
       const text = await res.text();
       setStatus(text);
 
-      // Auto update status to OFF after 5 seconds
       setTimeout(() => {
         setStatus("LED is OFF (auto after 5 sec)");
       }, 5000);
@@ -41,7 +63,6 @@ export default function About() {
       const text = await res.text();
       setStatus(text);
 
-      // Save the schedule locally for display
       setSavedDay(`${dayHour.padStart(2, "0")}:${dayMinute.padStart(2, "0")}`);
       setSavedNight(`${nightHour.padStart(2, "0")}:${nightMinute.padStart(2, "0")}`);
     } catch (err) {
@@ -52,9 +73,7 @@ export default function About() {
   return (
     <section className="page">
       <h1>Feed Me!</h1>
-      <p>
-        We are a team of passionate professionals committed to delivering exceptional service and value.
-      </p>
+      <p>We are a team of passionate professionals committed to delivering exceptional service and value.</p>
 
       {/* Manual control */}
       <div style={{ marginTop: "1.5rem" }}>
@@ -121,6 +140,5 @@ export default function About() {
         </p>
       )}
     </section>
-    
   );
 }

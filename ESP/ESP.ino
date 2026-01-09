@@ -13,6 +13,9 @@ ESP8266WebServer server(80);
 // LED pin
 const int ledPin = D1;
 
+// IR sensor pin
+const int irPin = D2;
+
 // NTP client setup
 WiFiUDP ntpUDP;
 NTPClient timeClient(ntpUDP, "pool.ntp.org", 8 * 3600, 60000); 
@@ -31,6 +34,8 @@ void setup() {
   Serial.begin(115200);
   pinMode(ledPin, OUTPUT);
   digitalWrite(ledPin, LOW);
+
+  pinMode(irPin, INPUT);
 
   // Connect to Wi-Fi
   WiFi.begin(ssid, password);
@@ -77,6 +82,31 @@ void setup() {
     server.send(200, "text/plain", "Schedule updated!");
     Serial.printf("Day schedule: %02d:%02d\n", dayHour, dayMinute);
     Serial.printf("Night schedule: %02d:%02d\n", nightHour, nightMinute);
+  });
+
+  // Get current schedule route
+  server.on("/getSchedule", []() {
+    String json = "{";
+    json += "\"dayHour\":" + String(dayHour) + ",";
+    json += "\"dayMinute\":" + String(dayMinute) + ",";
+    json += "\"nightHour\":" + String(nightHour) + ",";
+    json += "\"nightMinute\":" + String(nightMinute);
+    json += "}";
+
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    server.send(200, "application/json", json);
+    Serial.println("Schedule requested via /getSchedule");
+  });
+
+  // IR sensor route
+  server.on("/irStatus", []() {
+    int irValue = digitalRead(irPin);
+    String status = (irValue == HIGH) ? "detected" : "none";
+    String json = "{\"status\":\"" + status + "\"}";
+
+    server.sendHeader("Access-Control-Allow-Origin", "*");
+    server.send(200, "application/json", json);
+    Serial.printf("IR sensor status: %s\n", status.c_str());
   });
 
   // Default route
