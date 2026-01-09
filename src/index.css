@@ -1,0 +1,48 @@
+/* CSS Reset & Base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html:focus-within {
+  scroll-behavior: smooth;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+  color: var(--gray-900);
+  background: #fff;
+  text-rendering: optimizeLegibility;
+}
+
+/* Color tokens */
+:root {
+  --primary-600: #3b82f6;
+  --primary-700: #2563eb;
+
+  --gray-100: #e5e7eb;
+  --gray-200: #e5e7eb;
+  --gray-700: #374151;
+  --gray-800: #1f2937;
+  --gray-900: #111827;
+}
+
+/* Headings */
+h1, h2, h3, h4 {
+  line-height: 1.25;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+}
+
+section {
+  scroll-margin-top: 90px; /* offset for sticky navbar */
+}
