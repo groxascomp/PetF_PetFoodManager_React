@@ -14,16 +14,14 @@ import Services from "./pages/Services";
 import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
+import Level from "./pages/Level";   // ✅ new Level page
 
 export default function App() {
   return (
     <Router>
       {/* Show TopBar + NavBar everywhere except Login */}
       <Routes>
-        <Route
-          path="/login"
-          element={<Login />}
-        />
+        <Route path="/login" element={<Login />} />
 
         <Route
           path="*"
@@ -38,7 +36,7 @@ export default function App() {
                   element={
                     <>
                       <Hero />
-                    
+                      {/* You can add <Company /> here if you want it visible on home */}
                     </>
                   }
                 />
@@ -47,6 +45,7 @@ export default function App() {
                 <Route path="/services" element={<Services />} />
                 <Route path="/blog" element={<Blog />} />
                 <Route path="/contact" element={<Contact />} />
+                <Route path="/level" element={<Level />} />   {/* ✅ new route */}
               </Routes>
               <Footer />
             </>

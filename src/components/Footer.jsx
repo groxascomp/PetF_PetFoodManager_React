@@ -1,30 +1,19 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import "../App.css";
 
 export default function Footer() {
-  const navigate = useNavigate();
-
-  const handleLogout = () => {
-    navigate("/login");
-  };
-
   return (
-    <footer className="footer">
-      <div className="container footer__inner">
-        <p>© {new Date().getFullYear()} PetF. All rights reserved.</p>
-        <ul className="footer__links">
-          <li>
-            <button
-  onClick={handleLogout}
-  className="btn btn--outline btn--logout"
-  style={{ padding: "0.4rem 0.8rem" }}
->
-  Log-Out
-</button>
-          </li>
-        </ul>
-      </div>
-    </footer>
+    <footer className="bg-gray-800 text-gray-300 py-6">
+  <div className="container footer__inner">
+    <p>© {new Date().getFullYear()} PetF. All rights reserved.</p>
+    <ul className="footer__links">
+      <li>
+        <span className="text-white font-semibold">College of Engineering</span>
+      </li>
+    </ul>
+  </div>
+</footer>
+
+
   );
 }
