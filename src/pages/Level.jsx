@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 export default function Level() {
   const [irStatus, setIrStatus] = useState("none");
-  const ESP_IP = "http://192.168.8.139"; // your ESP8266 IP
+  const ESP_IP = "http://10.149.191.63"; // your ESP8266 IP
 
   useEffect(() => {
     const fetchStatus = async () => {

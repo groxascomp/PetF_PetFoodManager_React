@@ -27,7 +27,7 @@ export default function App() {
           path="*"
           element={
             <>
-              <TopBar />
+              
               <NavBar />
               <Routes>
                 {/* Home page */}
