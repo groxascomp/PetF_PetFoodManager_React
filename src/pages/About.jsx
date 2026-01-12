@@ -14,6 +14,7 @@ export default function About() {
   const [showClock, setShowClock] = useState(false);
   const [showDefaultMessage, setShowDefaultMessage] = useState(true);
 
+  // Replace with the IP printed in Serial Monitor
   const ESP_IP = "http://10.58.198.63";
 
   useEffect(() => {
@@ -63,9 +64,10 @@ export default function About() {
     return `${hour.toString().padStart(2, "0")}:${minute} ${ampm}`;
   };
 
-  const turnOnLed = async () => {
+  // Updated to call /servo/feed
+  const sendMeal = async () => {
     try {
-      const res = await fetch(`${ESP_IP}/led/on`);
+      const res = await fetch(`${ESP_IP}/servo/feed`);
       if (!res.ok) throw new Error("Bad response");
       const text = await res.text();
       showStatus(text);
@@ -127,7 +129,7 @@ export default function About() {
           {showEmojis && <span className="emoji-fade-bounce text-2xl">🐾</span>}
           <button
             className="bg-[rgb(13,58,81)] hover:bg-[rgb(83,126,149)] text-white font-bold py-2 px-4 rounded shadow flex items-center"
-            onClick={turnOnLed}
+            onClick={sendMeal}
           >
             Send Meal
           </button>

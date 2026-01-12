@@ -5,6 +5,7 @@
 #include <ESP8266HTTPClient.h>
 #include <WiFiClientSecure.h>
 #include <time.h>
+#include <Servo.h>   // Servo library
 
 // Wi-Fi credentials
 const char* ssid = "Yan";
@@ -13,8 +14,9 @@ const char* password = "CDV0208@";
 // Web server
 ESP8266WebServer server(80);
 
-// LED pin
-const int ledPin = D1;
+// Servo pin
+const int servoPin = D1;
+Servo feederServo;
 
 // IR sensor pin
 const int irPin = D2;
@@ -91,8 +93,6 @@ void sendLog(const String& event) {
 
 void setup() {
   Serial.begin(115200);
-  pinMode(ledPin, OUTPUT);
-  digitalWrite(ledPin, LOW);
 
   pinMode(irPin, INPUT);
 
@@ -110,27 +110,30 @@ void setup() {
   // Start NTP
   timeClient.begin();
 
+  // Attach servo
+  feederServo.attach(servoPin);
+  feederServo.write(0);   // start at 0°
+
   // Manual route
-  server.on("/led/on", []() {
-    digitalWrite(ledPin, HIGH);
+  server.on("/servo/feed", []() {
+    feederServo.write(180);   // rotate to 180°
     server.sendHeader("Access-Control-Allow-Origin", "*");
     server.send(200, "text/plain", "Food Served (Manual)");
     Serial.println("Food Served (Manual)");
 
     sendLog("Food Served (Manual)");
 
-    // Auto-off after 5 seconds
     triggerTime = millis();
     triggered = true;
   });
 
-  // LED off route (no logging)
-  server.on("/led/off", []() {
-    digitalWrite(ledPin, LOW);
+  // Servo reset route (manual override)
+  server.on("/servo/reset", []() {
+    feederServo.write(0);   // return to 0°
     server.sendHeader("Access-Control-Allow-Origin", "*");
-    server.send(200, "text/plain", "LED is OFF (Manual)");
-    Serial.println("LED turned OFF manually");
-    triggered = false; // reset flag
+    server.send(200, "text/plain", "Servo reset to 0°");
+    Serial.println("Servo reset manually");
+    triggered = false;
   });
 
   // Schedule route
@@ -195,7 +198,7 @@ void loop() {
     (currentHour == nightHour && currentMinute == nightMinute);
 
   if (isScheduledTime && !triggered && currentMinute != lastMinute) {
-    digitalWrite(ledPin, HIGH);
+    feederServo.write(180);   // rotate to 180°
     triggerTime = millis();
     triggered = true;
     lastMinute = currentMinute;  // mark this minute as already triggered
@@ -203,11 +206,10 @@ void loop() {
     sendLog("Food Served (Scheduled)");
   }
 
-  // Turn off LED after 5 seconds (works for both manual and schedule)
-  if (triggered && millis() - triggerTime >= 5000) {
-    digitalWrite(ledPin, LOW);
-    Serial.println("LED auto OFF after 5 sec");
-    triggered = false; // reset so it doesn’t keep firing
-    // No log here
+  // Return servo to 0° after 3 seconds
+  if (triggered && millis() - triggerTime >= 100) {
+    feederServo.write(0);   // return to original position
+    Serial.println("Servo returned to 0° after 3 sec");
+    triggered = false;
   }
 }
