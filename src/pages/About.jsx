@@ -1,3 +1,4 @@
+// src/pages/About.jsx
 import { useState, useEffect } from "react";
 
 export default function About() {
@@ -44,12 +45,12 @@ export default function About() {
 
   const showStatus = (message) => {
     const cleanMessage = message.replace(/Manual/gi, "").replace(/\(\)/g, "").trim();
-    setShowDefaultMessage(false);   // hide default message
+    setShowDefaultMessage(false);
     setStatus(cleanMessage);
 
     setTimeout(() => {
       setStatus("");
-      setShowDefaultMessage(true);  // show default message again
+      setShowDefaultMessage(true);
     }, 5000);
   };
 
@@ -68,6 +69,10 @@ export default function About() {
       if (!res.ok) throw new Error("Bad response");
       const text = await res.text();
       showStatus(text);
+
+      // Play bell sound when sending meal
+      const audio = new Audio("/hector-bell.mp3");
+      audio.play().catch((err) => console.error("Audio play failed:", err));
 
       setShowEmojis(true);
       setTimeout(() => setShowEmojis(false), 5000);
@@ -97,18 +102,28 @@ export default function About() {
 
   return (
     <div
-  className="h-[684px]"
-  style={{ backgroundColor: "rgb(189, 222, 238)" }}
->
-
+      className="h-[684px]"
+      style={{
+        background: `
+          linear-gradient(-90deg, rgba(81, 104, 124, 0.0), rgba(56, 73, 111, 0.0)),
+          url("/cat-food-bg.jpg") center/cover no-repeat fixed
+        `,
+        paddingTop: "0px",
+      }}
+    >
       <section className="max-w-4xl mx-auto px-6 pt-0 pb-4 text-center font-sans">
-        <br></br><h1 className="text-6xl font-extrabold text-gray-800 mb-8">Feed Your Lovely Pets !</h1>
-        <h2 className="text-xl font-semibold text-gray-700 mb-8">
+        <h1 className="text-6xl font-extrabold text-gray-800 ">
+          Feed Your Lovely Pets !
+        </h1>
+        <h2
+          className="text-xl font-semibold text-gray-700 mb-10"
+          style={{ paddingBottom: "10px" }}
+        >
           🐱 Control & Scheduling 🐶
-        </h2><br></br>
+        </h2>
 
         {/* Send Meal */}
-        <div className="mb-2 flex justify-center items-center gap-4">
+        <div className="flex justify-center items-center gap-4">
           {showEmojis && <span className="emoji-fade-bounce text-2xl">🐾</span>}
           <button
             className="bg-[rgb(13,58,81)] hover:bg-[rgb(83,126,149)] text-white font-bold py-2 px-4 rounded shadow flex items-center"
@@ -120,11 +135,7 @@ export default function About() {
         </div>
 
         {/* Popup space */}
-        <div className="h-12 flex justify-center items-center mb-2"
-        style={{
-          marginbottom: "0px",
-        }}
-        >
+        <div className="h-10 flex justify-center items-center">
           {showDefaultMessage && (
             <p className="popup-fade font-semibold text-gray-600">
               Ensure your pet is fed responsibly and thoughtfully.
@@ -142,8 +153,10 @@ export default function About() {
         </div>
 
         {/* Schedule */}
-        <div className="bg-white border border-gray-300 rounded-lg shadow p-6 max-w-md mx-auto mb-4" style={{ paddingTop: "15px", paddingBottom: "0px",  }} >
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Set Day Schedule</h3>
+        <div className="bg-white border border-gray-300 rounded-lg shadow p-6 max-w-md mx-auto mb-4">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Set Day Schedule
+          </h3>
           <input
             type="time"
             id="dayTime"
@@ -157,8 +170,10 @@ export default function About() {
             className="custom-time-input mb-6"
           />
 
-          <h3 className="text-lg font-semibold text-gray-800 mb-4">Set Night Schedule</h3>
-          <div className="flex flex-col items-center gap-4 mb-6">
+          <h3 className="text-lg font-semibold text-gray-800 mb-4">
+            Set Night Schedule
+          </h3>
+          <div className="flex flex-col items-center gap-4">
             <input
               type="time"
               id="nightTime"
@@ -187,13 +202,19 @@ export default function About() {
 
         {/* Saved times */}
         {(savedDay || savedNight) && (
-          <div className="bg-white border border-gray-300 rounded-lg shadow p-6 max-w-md mx-auto mb-2" style={{ paddingTop: "12px", paddingBottom: "12px", }}>
-            <h3 className="text-lg font-semibold text-gray-800 mb-4">📅 Current Schedule 📅</h3>
+          <div className="bg-white border border-gray-300 rounded-lg shadow p-6 max-w-md mx-auto mb-2">
+            <h3 className="text-lg font-semibold text-gray-800 mb-4">
+              📅 Current Schedule 📅
+            </h3>
             {savedDay && (
-              <p className="text-gray-700">Day Schedule: {formatTo12Hour(savedDay)}</p>
+              <p className="text-gray-700">
+                Day Schedule: {formatTo12Hour(savedDay)}
+              </p>
             )}
             {savedNight && (
-              <p className="text-gray-700">Night Schedule: {formatTo12Hour(savedNight)}</p>
+              <p className="text-gray-700">
+                Night Schedule: {formatTo12Hour(savedNight)}
+              </p>
             )}
           </div>
         )}

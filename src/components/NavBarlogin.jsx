@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 export default function NavBar() {
   const [irStatus, setIrStatus] = useState("none");
   const [mobileOpen, setMobileOpen] = useState(false);
-  const ESP_IP = "http://192.168.8.139"; // your ESP8266 IP
+  const ESP_IP = "http://192.168.8.139"; // 
   const navigate = useNavigate();
 
   const handleLogout = () => {

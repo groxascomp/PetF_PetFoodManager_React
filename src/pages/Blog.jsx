@@ -1,9 +1,22 @@
+// src/pages/Blog.jsx
 import React, { useEffect, useState } from "react";
 
 export default function Blog() {
   const [petFact, setPetFact] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  const playSound = (type) => {
+    let audio;
+    if (type === "dog") {
+      audio = new Audio("/bark.mp3");
+    } else if (type === "cat") {
+      audio = new Audio("/meow-1.mp3");
+    }
+    if (audio) {
+      audio.play().catch((err) => console.error("Audio play failed:", err));
+    }
+  };
 
   const fetchPetFact = async () => {
     setLoading(true);
@@ -22,8 +35,10 @@ export default function Blog() {
 
       if (choice.type === "cat") {
         setPetFact("🐱 " + data.fact);
+        playSound("cat");
       } else if (choice.type === "dog") {
         setPetFact("🐶 " + data.data[0].attributes.body);
+        playSound("dog");
       }
     } catch (err) {
       setError("Oops! Could not fetch a pet fact right now.");
@@ -38,16 +53,29 @@ export default function Blog() {
 
   return (
     <div
-  className="h-[684px]"
-  style={{ backgroundColor: "rgb(189, 222, 238)",
-    paddingTop:"90px",
-   }}
->
-      <div className="bg-white shadow rounded-lg p-8 max-w-xl mx-auto text-center">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">🐾 Pet Facts Blog</h1>
-        <br></br><p className="text-gray-600 mb-6">
+      className="h-[684px]"
+      style={{
+        background: `
+          linear-gradient(-90deg, rgba(81, 104, 124, 0.0), rgba(56, 73, 111, 0.0)),
+          url("/cat-food-bg.jpg") center/cover no-repeat fixed
+        `,
+        paddingTop: "60px",
+      }}
+    >
+      <div
+        className="bg-white shadow rounded-lg p-8 max-w-xl mx-auto text-center"
+        style={{ paddingTop: "20px" }}
+      >
+        <h1 className="text-3xl font-bold text-gray-800 mb-4">🐾 Pet Facts Blog 🐾</h1>
+        <p
+          className="text-gray-600 mb-10"
+          style={{
+            paddingTop: "20px",
+            paddingBottom: "20px",
+          }}
+        >
           Discover fun and quirky facts about pets!
-        </p><br></br>
+        </p>
 
         {loading && <p className="text-gray-500">Loading a pet fact...</p>}
         {error && <p className="text-red-500">{error}</p>}

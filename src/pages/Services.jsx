@@ -1,3 +1,4 @@
+// src/pages/Services.jsx
 import { useEffect, useState } from "react";
 import { CheckCircleIcon, UserIcon } from "@heroicons/react/24/solid";
 
@@ -89,11 +90,22 @@ export default function Services() {
   };
 
   return (
-    <div className="bg-blue-100 min-h-screen">
-      {/* Reduced top padding so heading sits closer to navbar */}
-      <section className="max-w-4xl mx-auto px-4 pt-4 pb-12 text-center font-sans">
+    <div
+      className="min-h-screen"
+      style={{
+        background: `
+          linear-gradient(-90deg, rgba(81, 104, 124, 0.0), rgba(56, 73, 111, 0.0)),
+          url("/cat-food-bg.jpg") center/cover no-repeat fixed
+        `,
+        paddingTop: "0px",
+        paddingBottom: "00px",
+      }}
+    >
+      <section className="max-w-4xl mx-auto px-4 pt-4 pb-12 text-center font-sans"
+      style={{ paddingTop: "00px", }}
+      >
         <h1 className="text-6xl font-extrabold text-gray-800 mb-6">Tracking Food</h1>
-        <h2 className="text-xl font-semibold text-gray-700 mb-8">🍽️ Food Served History 🍽️</h2><br></br>
+        <h2 className="text-xl font-semibold text-gray-700 mb-8">🍽️ Food Served History 🍽️</h2><br />
 
         {/* Tracker Grid */}
         <div className="grid grid-cols-3 gap-6 max-w-3xl mx-auto mb-8">

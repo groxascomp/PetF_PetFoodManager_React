@@ -19,7 +19,7 @@ export default function Hero() {
       <div className="hero__content container">
         {/* Updated heading */}
         <h1 className="hero__title text-6xl font-extrabold text-gray-800">
-          WELCOME!
+          Hello Fur Parent!
         </h1>
 
         <p className="hero__subtitle">

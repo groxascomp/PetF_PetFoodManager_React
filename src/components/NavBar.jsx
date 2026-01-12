@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 
 export default function NavBar() {
@@ -6,6 +6,7 @@ export default function NavBar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const ESP_IP = "http://192.168.8.139"; // your ESP8266 IP
   const navigate = useNavigate();
+  const prevStatus = useRef("none");
 
   const handleLogout = () => {
     navigate("/login");
@@ -17,7 +18,17 @@ export default function NavBar() {
         const res = await fetch(`${ESP_IP}/irStatus`);
         if (!res.ok) throw new Error("Bad response");
         const data = await res.json();
-        setIrStatus(data.status);
+
+        setIrStatus((old) => {
+          if (data.status !== "detected" && old === "detected") {
+            const audio = new Audio("/discord-notification.mp3");
+            audio.play().catch((err) =>
+              console.error("Audio play failed:", err)
+            );
+          }
+          prevStatus.current = data.status;
+          return data.status;
+        });
       } catch {
         setIrStatus("none");
       }
@@ -65,20 +76,20 @@ export default function NavBar() {
             }>
               Trivia
             </NavLink>
-
-            {/* Level indicator (clickable) */}
             <NavLink to="/level" className={({ isActive }) =>
               `flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium ${
                 isActive ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
               }`
             }>
               <span>Level</span>
-              <span className={`w-3 h-3 rounded-full ${
-                irStatus === "detected" ? "bg-green-500" : "bg-red-500"
-              }`}></span>
+              <span
+                className={`w-3 h-3 rounded-full ${
+                  irStatus === "detected" ? "bg-green-500" : "bg-red-500"
+                }`}
+              ></span>
             </NavLink>
 
-            {/* Desktop Log-Out button (hidden on mobile) */}
+            {/* Log-Out */}
             <button
               onClick={handleLogout}
               className="hidden sm:inline-block px-3 py-1 text-sm font-medium text-red-500 border border-red-500 rounded hover:bg-red-600 hover:text-white transition"
@@ -87,7 +98,7 @@ export default function NavBar() {
             </button>
           </div>
 
-          {/* Right side: hamburger only */}
+          {/* Mobile hamburger */}
           <div className="flex items-center sm:hidden">
             <button
               type="button"
@@ -112,51 +123,29 @@ export default function NavBar() {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="sm:hidden px-2 pt-2 pb-3 space-y-1">
-          <NavLink to="/" end className={({ isActive }) =>
-            `block px-3 py-2 rounded-md text-base font-medium ${
-              isActive ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
-            }`
-          }>
+          <NavLink to="/" end className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
             Home
           </NavLink>
-          <NavLink to="/about" className={({ isActive }) =>
-            `block px-3 py-2 rounded-md text-base font-medium ${
-              isActive ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
-            }`
-          }>
+          <NavLink to="/about" className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
             Feed me!
           </NavLink>
-          <NavLink to="/services" className={({ isActive }) =>
-            `block px-3 py-2 rounded-md text-base font-medium ${
-              isActive ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
-            }`
-          }>
+          <NavLink to="/services" className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
             Tracker
           </NavLink>
-          <NavLink to="/blog" className={({ isActive }) =>
-            `block px-3 py-2 rounded-md text-base font-medium ${
-              isActive ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
-            }`
-          }>
+          <NavLink to="/blog" className="block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
             Trivia
           </NavLink>
-
-          {/* Level indicator in mobile (clickable) */}
-          <NavLink to="/level" className={({ isActive }) =>
-            `flex items-center gap-2 block px-3 py-2 rounded-md text-base font-medium ${
-              isActive ? "bg-gray-900 text-white" : "text-gray-300 hover:bg-gray-700 hover:text-white"
-            }`
-          }>
+          <NavLink to="/level" className="flex items-center gap-2 block px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
             <span>Level</span>
-            <span className={`w-3 h-3 rounded-full ${
-              irStatus === "detected" ? "bg-green-500" : "bg-red-500"
-            }`}></span>
+            <span
+              className={`w-3 h-3 rounded-full ${
+                irStatus === "detected" ? "bg-green-500" : "bg-red-500"
+              }`}
+            ></span>
           </NavLink>
-
-          {/* Mobile Log-Out button */}
           <button
             onClick={handleLogout}
-            className="w-full text-left block px-3 py-2 rounded-md text-base font-medium text-red-500 border border-red-500 hover:bg-red-600 hover:text-white transition"
+            className="block w-full text-left px-3 py-2 text-base font-medium text-red-500 border border-red-500 rounded hover:bg-red-600 hover:text-white transition"
           >
             Log-Out
           </button>
