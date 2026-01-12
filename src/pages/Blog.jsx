@@ -37,7 +37,12 @@ export default function Blog() {
   }, []);
 
   return (
-    <div className="bg-blue-100 min-h-screen pt-10">
+    <div
+  className="h-[684px]"
+  style={{ backgroundColor: "rgb(189, 222, 238)",
+    paddingTop:"90px",
+   }}
+>
       <div className="bg-white shadow rounded-lg p-8 max-w-xl mx-auto text-center">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">🐾 Pet Facts Blog</h1>
         <br></br><p className="text-gray-600 mb-6">

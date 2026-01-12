@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 export default function Level() {
   const [irStatus, setIrStatus] = useState("none");
-  const ESP_IP = "http://10.149.191.63"; // your ESP8266 IP
+  const ESP_IP = "http://192.168.8.139"; // your ESP8266 IP
 
   useEffect(() => {
     const fetchStatus = async () => {
@@ -22,8 +22,12 @@ export default function Level() {
   }, []);
 
   return (
-    <div className="bg-blue-100 min-h-screen pt-25">
-      <div className="bg-white shadow rounded-lg p-8 max-w-md mx-auto text-center">
+    <div
+  className="h-[684px]"
+  style={{ backgroundColor: "rgb(189, 222, 238)",
+    paddingTop:"90px",
+   }}>
+      <div className="bg-white shadow rounded-lg p-8 max-w-xl mx-auto text-center">
         <h1 className="text-3xl font-bold text-gray-800 mb-4">Pet Level Status</h1>
         <p className="text-gray-600 mb-6">
           

@@ -14,20 +14,25 @@ import Services from "./pages/Services";
 import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
-import Level from "./pages/Level";   // ✅ new Level page
+import LoginAnim from "./pages/LoginAnim";  // ✅ new animation page
+import Level from "./pages/Level";          // ✅ Level page
 
 export default function App() {
   return (
     <Router>
       {/* Show TopBar + NavBar everywhere except Login */}
       <Routes>
+        {/* Login page */}
         <Route path="/login" element={<Login />} />
 
+        {/* Login animation page */}
+        <Route path="/login-anim" element={<LoginAnim />} />
+
+        {/* All other pages */}
         <Route
           path="*"
           element={
             <>
-              
               <NavBar />
               <Routes>
                 {/* Home page */}

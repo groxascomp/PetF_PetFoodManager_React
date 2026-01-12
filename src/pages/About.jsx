@@ -13,7 +13,7 @@ export default function About() {
   const [showClock, setShowClock] = useState(false);
   const [showDefaultMessage, setShowDefaultMessage] = useState(true);
 
-  const ESP_IP = "http://10.149.191.63";
+  const ESP_IP = "http://192.168.8.139";
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -96,7 +96,11 @@ export default function About() {
   };
 
   return (
-    <div className="bg-blue-100 min-h-screen">
+    <div
+  className="h-[684px]"
+  style={{ backgroundColor: "rgb(189, 222, 238)" }}
+>
+
       <section className="max-w-4xl mx-auto px-6 pt-0 pb-4 text-center font-sans">
         <br></br><h1 className="text-6xl font-extrabold text-gray-800 mb-8">Feed Your Lovely Pets !</h1>
         <h2 className="text-xl font-semibold text-gray-700 mb-8">
@@ -116,7 +120,11 @@ export default function About() {
         </div>
 
         {/* Popup space */}
-        <div className="h-12 flex justify-center items-center mb-2">
+        <div className="h-12 flex justify-center items-center mb-2"
+        style={{
+          marginbottom: "0px",
+        }}
+        >
           {showDefaultMessage && (
             <p className="popup-fade font-semibold text-gray-600">
               Ensure your pet is fed responsibly and thoughtfully.
@@ -134,7 +142,7 @@ export default function About() {
         </div>
 
         {/* Schedule */}
-        <div className="bg-white border border-gray-300 rounded-lg shadow p-6 max-w-md mx-auto mb-4">
+        <div className="bg-white border border-gray-300 rounded-lg shadow p-6 max-w-md mx-auto mb-4" style={{ paddingTop: "15px", paddingBottom: "0px",  }} >
           <h3 className="text-lg font-semibold text-gray-800 mb-4">Set Day Schedule</h3>
           <input
             type="time"
@@ -179,7 +187,7 @@ export default function About() {
 
         {/* Saved times */}
         {(savedDay || savedNight) && (
-          <div className="bg-white border border-gray-300 rounded-lg shadow p-6 max-w-md mx-auto mb-2">
+          <div className="bg-white border border-gray-300 rounded-lg shadow p-6 max-w-md mx-auto mb-2" style={{ paddingTop: "12px", paddingBottom: "12px", }}>
             <h3 className="text-lg font-semibold text-gray-800 mb-4">📅 Current Schedule 📅</h3>
             {savedDay && (
               <p className="text-gray-700">Day Schedule: {formatTo12Hour(savedDay)}</p>

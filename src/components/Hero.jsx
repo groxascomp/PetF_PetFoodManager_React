@@ -8,12 +8,12 @@ export default function Hero() {
   return (
     <section
       id="home"
-      className="hero"
+      className="hero h-[684px]"
       style={{
         background: `
           linear-gradient(-90deg, rgba(81, 104, 124, 0.0), rgba(56, 73, 111, 0.0)),
           url("/cat-food-bg.jpg") center/cover no-repeat fixed
-        `,
+        `,paddingBottom: "23px",
       }}
     >
       <div className="hero__content container">
