@@ -7,8 +7,8 @@
 #include <time.h>
 
 // Wi-Fi credentials
-const char* ssid = "DITO_302E3_2.4";
-const char* password = "5045d752";
+const char* ssid = "Yan";
+const char* password = "CDV0208@";
 
 // Web server
 ESP8266WebServer server(80);

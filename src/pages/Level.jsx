@@ -3,9 +3,9 @@ import React, { useState, useEffect, useRef } from "react";
 
 export default function Level() {
   const [irStatus, setIrStatus] = useState("none");
-  const ESP_IP = "http://192.168.8.139"; // your ESP8266 IP
-  const audioRef = useRef(null); // 👈 reference to audio element
-  const prevStatus = useRef("none"); // track previous status
+  const ESP_IP = "http://10.58.198.63"; // 
+  const audioRef = useRef(null); // 
+  const prevStatus = useRef("none"); 
 
   useEffect(() => {
     const fetchStatus = async () => {

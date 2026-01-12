@@ -14,7 +14,7 @@ export default function About() {
   const [showClock, setShowClock] = useState(false);
   const [showDefaultMessage, setShowDefaultMessage] = useState(true);
 
-  const ESP_IP = "http://192.168.8.139";
+  const ESP_IP = "http://10.58.198.63";
 
   useEffect(() => {
     const fetchSchedule = async () => {
